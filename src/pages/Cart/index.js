@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 
 import { Container, ProductTable, Total } from './styles';
 
-export function Cart({ cart }) {
+export function Cart({ cart, dispatch }) {
   return (
     <Container>
       <ProductTable>
@@ -25,7 +25,7 @@ export function Cart({ cart }) {
         <tbody>
           {
             cart.map(product => (
-              <tr>
+            <tr key={product.id}>
             <td>
               <img
                 src={product.image}
@@ -38,7 +38,9 @@ export function Cart({ cart }) {
             </td>
             <td>
               <div>
-                <button type="button">
+                <button
+                type="button"
+                >
                   <MdRemoveCircleOutline size={20} color="#7159c1" />
                 </button>
                 <input type="number" readOnly value={product.amount} />
@@ -54,7 +56,15 @@ export function Cart({ cart }) {
             </td>
             <td>
               <button type="button">
-                <MdDelete size={20} color="#7159c1" />
+                <MdDelete size={20} color="#7159c1" onClick={
+                  () =>
+                  dispatch(
+                      {
+                        type: 'REMOVE_FROM_CART',
+                        id: product.id,
+                      }
+                    )
+                  } />
               </button>
             </td>
           </tr>
