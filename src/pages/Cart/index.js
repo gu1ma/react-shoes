@@ -13,7 +13,9 @@ import { Container, ProductTable, Total } from './styles';
 
 import * as CartActions from '../../store/modules/cart/actions';
 
-export function Cart({ cart, dispatch, removeFromCart, updateAmount }) {
+import { formatPrice } from '../../util/format';
+
+export function Cart({ cart, total, dispatch, removeFromCart, updateAmount }) {
 
   function increment(product){
     updateAmount(product.id, product.amount+1)
@@ -71,7 +73,7 @@ export function Cart({ cart, dispatch, removeFromCart, updateAmount }) {
             </td>
             <td>
               <strong>
-                R$258,80
+                {product.subTotal}
               </strong>
             </td>
             <td>
@@ -91,7 +93,7 @@ export function Cart({ cart, dispatch, removeFromCart, updateAmount }) {
 
         <Total>
           <span>TOTAL</span>
-          <strong>R$1920,28</strong>
+          <strong>{ total }</strong>
         </Total>
       </footer>
     </Container>
@@ -99,7 +101,13 @@ export function Cart({ cart, dispatch, removeFromCart, updateAmount }) {
 }
 
 const mapStateToProps = state => ({
-  cart: state.cart,
+  cart: state.cart.map(product => ({
+    ...product,
+    subTotal: formatPrice(product.amount * product.price)
+  })),
+  total: formatPrice(state.cart.reduce((total, product) => {
+    return total + product.price * product.amount;
+  }, 0)),
 });
 
 const mapDispatchToProps = dispatch =>
