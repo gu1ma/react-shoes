@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { MdAddShoppingCart } from 'react-icons/md';
 
+import { bindActionCreators } from 'redux';
+
 import { connect } from 'react-redux';
 
 import api from '../../services/api';
@@ -8,7 +10,9 @@ import { formatPrice } from '../../util/format';
 
 import { ProductList } from './styles';
 
-export function Home({ dispatch }) {
+import * as CartActions from '../../store/modules/cart/actions';
+
+export function Home({ dispatch, addToCart }) {
   const [products, updateProducts] = useState([]);
 
   async function fetchPosts() {
@@ -24,10 +28,7 @@ export function Home({ dispatch }) {
   }
 
   function handleAddProduct(product) {
-    dispatch({
-      type: 'ADD_TO_CART',
-      product,
-    });
+    addToCart(product);
   }
 
   useEffect(() => {
@@ -58,4 +59,7 @@ export function Home({ dispatch }) {
   );
 }
 
-export default connect()(Home);
+const mapDispatchToProps = dispatch =>
+  bindActionCreators(CartActions, dispatch);
+
+export default connect(null, mapDispatchToProps)(Home);
